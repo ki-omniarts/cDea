@@ -45,6 +45,7 @@ configure_file (
 # -------
 install(DIRECTORY include/ DESTINATION include/Dea                            
       FILES_MATCHING PATTERN "*.h")
+install(FILES "dea.h" DESTINATION include/)
 
 # CPack
 # -----
