@@ -2,7 +2,7 @@
  * cycle.h
  * This file is part of cDea
  *
- * Copyright (C) 2012 - KiNaudiz
+ * Copyright (C) 2012-2013 - KiNaudiz
  *
  * cDea is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -113,12 +113,12 @@ class StaticCycle final : public OnOverload <T,Min,Max>
         const T operator()() const { return value_; }
         StaticCycle& operator++();
         StaticCycle& operator--();
-        StaticCycle& operator++(int); //TODO
-        StaticCycle& operator--(int); //TODO
+        StaticCycle& operator++(int);
+        StaticCycle& operator--(int);
         template <typename U>
-        StaticCycle& operator+=(U rhs);
+        StaticCycle& operator+=(U&& rhs);
         template <typename U>
-        StaticCycle& operator-=(U rhs);
+        StaticCycle& operator-=(U&& rhs);
 
         /**
          * Does NOT swap OnOverload members
@@ -184,27 +184,43 @@ template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
 StaticCycle<T,Min,Max,Step,OnOverload>&
 StaticCycle<T,Min,Max,Step,OnOverload>::operator++()
 {
-    value_++; Base::Overload(value_); return *this;
+    value_+=Step; Base::Overload(value_); return *this;
 }
 template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
 StaticCycle<T,Min,Max,Step,OnOverload>&
 StaticCycle<T,Min,Max,Step,OnOverload>::operator--()
 {
-    value_--; Base::Overload(value_); return *this;
+    value_-=Step; Base::Overload(value_); return *this;
+}
+template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
+StaticCycle<T,Min,Max,Step,OnOverload>&
+StaticCycle<T,Min,Max,Step,OnOverload>::operator++(int)
+{
+    auto tmp{*this};
+    value_+=Step; Base::Overload(value_); return *tmp;
+}
+template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
+StaticCycle<T,Min,Max,Step,OnOverload>&
+StaticCycle<T,Min,Max,Step,OnOverload>::operator--(int)
+{
+    auto tmp{*this};
+    value_-=Step; Base::Overload(value_); return *tmp;
 }
 template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
 template <typename U>
 StaticCycle<T,Min,Max,Step,OnOverload>&
-StaticCycle<T,Min,Max,Step,OnOverload>::operator+=(U rhs)
+StaticCycle<T,Min,Max,Step,OnOverload>::operator+=(U&& rhs)
 {
-    value_+=rhs; Base::Overload(value_); return *this;
+    value_+=std::forward<U>(rhs); Base::Overload(value_);
+    return *this;
 }
 template<typename T,T Min,T Max,T Step,template<typename,T,T> class OnOverload>
 template <typename U>
 StaticCycle<T,Min,Max,Step,OnOverload>&
-StaticCycle<T,Min,Max,Step,OnOverload>::operator-=(U rhs)
+StaticCycle<T,Min,Max,Step,OnOverload>::operator-=(U&& rhs)
 {
-    value_-=rhs; Base::Overload(value_); return *this;
+    value_=std::forward<U>(rhs); Base::Overload(value_);
+    return *this;
 }
 
 
