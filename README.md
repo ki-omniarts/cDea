@@ -7,14 +7,12 @@ It fits the new standard C++11 and is licensed unter GNU GPLv3+
 
 ## Installation ##
 
-``
-$ mkdir bin
+``$ mkdir bin``
 
-$ cd bin
+``$ cd bin``
 
-$ cmake ..
+``$ cmake ..``
 
-$ sudo make install
-``
+``$ sudo make install``
 
 Or just paste the header files into your project.
